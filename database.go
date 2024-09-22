@@ -23,13 +23,15 @@ func openDatabase(dbPath string) (*sql.DB, error) {
 func getDownloadTasks(db *sql.DB, offset, limit int) ([]DownloadTask, error) {
 	log.Printf("正在获取下载任务: offset=%d, limit=%d", offset, limit)
 	query := `
-		SELECT id, path, purity
-		FROM data
-		WHERE status = null
-		LIMIT ? OFFSET ?
-	`
+        SELECT id, path, purity
+        FROM data
+        WHERE status = 0
+        LIMIT ? OFFSET ?
+    `
+	log.Printf("执行查询: %s", query)
 	rows, err := db.Query(query, limit, offset)
 	if err != nil {
+		log.Printf("查询失败: %v", err)
 		return nil, fmt.Errorf("查询下载任务失败: %w", err)
 	}
 	defer rows.Close()
@@ -39,6 +41,7 @@ func getDownloadTasks(db *sql.DB, offset, limit int) ([]DownloadTask, error) {
 		var task DownloadTask
 		err := rows.Scan(&task.ID, &task.URL, &task.Purity)
 		if err != nil {
+			log.Printf("扫描行失败: %v", err)
 			return nil, fmt.Errorf("扫描下载任务失败: %w", err)
 		}
 		task.FilePath = filepath.Join(task.Purity, filepath.Base(task.URL))
@@ -48,7 +51,6 @@ func getDownloadTasks(db *sql.DB, offset, limit int) ([]DownloadTask, error) {
 	log.Printf("获取到 %d 个下载任务", len(tasks))
 	return tasks, nil
 }
-
 func updateStatus(db *sql.DB, resultChan <-chan DownloadResult) error {
 	log.Println("启动状态更新协程")
 	stmt, err := db.Prepare("UPDATE data SET status = ? WHERE id = ?")
