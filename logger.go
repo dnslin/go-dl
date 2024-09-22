@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func InitLogger() {
+func initLogger() {
 	logDir := "logs"
 	err := os.MkdirAll(logDir, 0755)
 	if err != nil {

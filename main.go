@@ -1,13 +1,14 @@
 package main
 
 import (
-	"golang.org/x/sync/errgroup"
 	"log"
 	"runtime"
+
+	"golang.org/x/sync/errgroup"
 )
 
 const (
-	dbPath       = "path/to/your/database.sqlite"
+	dbPath       = "./mv.db"
 	batchSize    = 100
 	maxWorkers   = 10
 	maxRetries   = 3
@@ -15,7 +16,7 @@ const (
 )
 
 func main() {
-	InitLogger()
+	initLogger()
 	log.Println("开始下载任务")
 
 	db, err := openDatabase(dbPath)
