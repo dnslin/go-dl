@@ -25,7 +25,7 @@ type DownloadResult struct {
 }
 
 func downloadFile(task DownloadTask) error {
-	log.Printf("开始下载文件 (ID: %d, URL: %s)", task.ID, task.URL)
+	log.Printf("开始下载文件 (ID: %s, URL: %s)", task.ID, task.URL)
 
 	proxyURL, err := url.Parse(proxyAddress)
 	if err != nil {
