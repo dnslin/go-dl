@@ -16,7 +16,34 @@ func openDatabase(dbPath string) (*sql.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("打开数据库失败: %w", err)
 	}
-	log.Println("数据库连接成功")
+
+	// 检查总记录数
+	var totalCount int
+	err = db.QueryRow("SELECT COUNT(*) FROM data").Scan(&totalCount)
+	if err != nil {
+		return nil, fmt.Errorf("查询总记录数失败: %w", err)
+	}
+	log.Printf("数据库中总共有 %d 条记录", totalCount)
+
+	// 检查 status = 0 的记录数
+	var pendingCount int
+	err = db.QueryRow("SELECT COUNT(*) FROM data WHERE status = 0").Scan(&pendingCount)
+	if err != nil {
+		return nil, fmt.Errorf("查询待处理记录数失败: %w", err)
+	}
+	log.Printf("数据库中有 %d 条待处理记录 (status = 0)", pendingCount)
+
+	// 如果有待处理记录，查看一条示例
+	if pendingCount > 0 {
+		var id int
+		var path, purity string
+		err = db.QueryRow("SELECT id, path, purity FROM data WHERE status = 0 LIMIT 1").Scan(&id, &path, &purity)
+		if err != nil {
+			return nil, fmt.Errorf("查询示例记录失败: %w", err)
+		}
+		log.Printf("示例待处理记录: ID=%d, Path=%s, Purity=%s", id, path, purity)
+	}
+
 	return db, nil
 }
 
