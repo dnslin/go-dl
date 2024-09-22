@@ -25,7 +25,7 @@ func getDownloadTasks(db *sql.DB, offset, limit int) ([]DownloadTask, error) {
 	query := `
 		SELECT id, path, purity
 		FROM data
-		WHERE status = 0
+		WHERE status = null
 		LIMIT ? OFFSET ?
 	`
 	rows, err := db.Query(query, limit, offset)
