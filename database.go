@@ -94,9 +94,9 @@ func updateStatus(db *sql.DB, resultChan <-chan DownloadResult) error {
 		_, err := stmt.Exec(result.Status, result.ID)
 		mu.Unlock()
 		if err != nil {
-			log.Printf("更新状态失败 (ID: %d): %v", result.ID, err)
+			log.Printf("更新状态失败 (ID: %s): %v", result.ID, err)
 		} else {
-			log.Printf("更新状态成功 (ID: %d, 状态: %d)", result.ID, result.Status)
+			log.Printf("更新状态成功 (ID: %s, 状态: %d)", result.ID, result.Status)
 			updatedCount++
 		}
 	}
