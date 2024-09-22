@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	dbPath       = "./mv.db"
+	dbPath       = "mv.db"
 	batchSize    = 100
 	maxWorkers   = 10
 	maxRetries   = 3

@@ -12,14 +12,14 @@ import (
 )
 
 type DownloadTask struct {
-	ID       int
+	ID       string
 	URL      string
 	Purity   string
 	FilePath string
 }
 
 type DownloadResult struct {
-	ID     int
+	ID     string
 	Status int
 	Err    error
 }

@@ -35,7 +35,7 @@ func openDatabase(dbPath string) (*sql.DB, error) {
 
 	// 如果有待处理记录，查看一条示例
 	if pendingCount > 0 {
-		var id int
+		var id string
 		var path, purity string
 		err = db.QueryRow("SELECT id, path, purity FROM data WHERE status = 0 LIMIT 1").Scan(&id, &path, &purity)
 		if err != nil {
@@ -78,6 +78,7 @@ func getDownloadTasks(db *sql.DB, offset, limit int) ([]DownloadTask, error) {
 	log.Printf("获取到 %d 个下载任务", len(tasks))
 	return tasks, nil
 }
+
 func updateStatus(db *sql.DB, resultChan <-chan DownloadResult) error {
 	log.Println("启动状态更新协程")
 	stmt, err := db.Prepare("UPDATE data SET status = ? WHERE id = ?")
