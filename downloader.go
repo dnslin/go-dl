@@ -36,12 +36,18 @@ func downloadFile(task DownloadTask) error {
 		Transport: &http.Transport{
 			Proxy: http.ProxyURL(proxyURL),
 		},
+		Timeout: 30 * time.Second,
 	}
-
+	client.Transport = &http.Transport{
+		Proxy:             http.ProxyURL(proxyURL),
+		DisableKeepAlives: true,
+	}
+	log.Printf("准备发送 HTTP GET 请求: %s", task.URL)
 	resp, err := client.Get(task.URL)
 	if err != nil {
 		return fmt.Errorf("HTTP GET 请求失败: %w", err)
 	}
+	log.Printf("HTTP GET 请求成功，状态码: %d", resp.StatusCode)
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
